@@ -196,6 +196,10 @@ showSimplifiedDataBtn.addEventListener('click', () => {
 });
 
 function extractCodeAP(production) {
+    if (!production) {
+        return ''; 
+    }
+    
     const match = production.match(/Код АП (\d+)/);
     return match ? match[1] : ''; 
 }
