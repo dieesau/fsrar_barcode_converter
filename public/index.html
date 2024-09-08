@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to XML Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <h1>Автоматический подбор алкокода к маркам</h1>
+            <input type="file" id="file-input" accept=".xlsx">
+            <button id="convert-btn">Сформировать XML</button>
+            <div id="download-links"></div>
+
+            <h2>Куки (обновляется раз в сутки)</h2>
+            <textarea id="cookie-input" placeholder="Enter Cookie">PHPSESSID=0hhvrqgqnco79olt4g110ge2p6; session-cookie=17f33849341057e4b001a60580267f9384de53ddcbb820daddc1f3720d8b5a6b7a747a78f5166be11d1f043d7010398d; f5avrbbbbbbbbbbbbbbbb=KCOENLOGCMNLMNFMBLMCLLEFPKCPHNFCCINLOGDKEAHBKJIDFEMFOOHEKBAGGEEODNGAKHINFMKDEMPODJNOMKBFKKLAHHBHODCKHMJCDDMLGLFEDGJOKDBKEACIEKGE; f5avr0137214192aaaaaaaaaaaaaaaa=KPGBHAAFLBEOEALCJADCBIMJOLEKEGPHHJOMFCAGOHLGIPDPNIKPLAJNCGLEAAFPDBJKBKDCEDFCJADPIDCCBGFMHIMAMDEHKOBDBDEEOAFAOJGDAJJMMFAEMPILMIPL</textarea>
+            <button id="post-request-btn">Подобрать алкокод к маркам из файла</button>
+            <button id="show-simplified-data-btn">Показать результат</button>
+            <pre id="simplified-data-output"></pre>
+
+            <button id="generate-xls-btn">Сформировать XLS</button>
+            <img id="cat-image" src="cat.jpg" alt="Филя">
+            
+        </div>
+
+        <div id="instructions">
+            <h2>Инструкция</h2>
+            <ol>
+                <li>Добавить файл с марками в формате Excel таблицы.</li>
+                <li>Из таблицы по кнопке "Сформировать XML" сформируются файлы XML. Если марок больше 99, то файлов будет несколько.</li>
+                <li>Файлы нужно скачать и загрузить на сайт ФСРАР <a href="https://service.fsrar.ru/" target="_blank">https://service.fsrar.ru/</a> через "Импорт из XML".</li>
+                <li>Нажать кнопку "Подобрать алкокоды к маркам".</li>
+                <li>Нажать "Сформировать XLSX" и проверить его.</li>
+                <li>???</li>
+                <li>Профит.</li>
+            </ol>
+        </div>
+    </div>
+    <div id="notification" class="hidden">Запросы завершены! Можете скачать XLS.</div>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
