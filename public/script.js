@@ -86,7 +86,15 @@ postRequestBtn.addEventListener('click', function () {
     fetchMarks(cookieValue, 1);
 });
 
-function fetchMarks(cookieValue, page) {
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const progress = document.getElementById('progress');
+let totalRequests = 0; 
+let completedRequests = 0;
+
+async function fetchMarks(cookieValue, page) {
     const start = (page - 1) * 25;
     const limit = 25;
 
@@ -114,9 +122,12 @@ function fetchMarks(cookieValue, page) {
             return found ? { ...mark, id: found.id } : mark;
         });
 
-        if (marksData.some(mark => !mark.id) && page < 15) {
+        if (marksData.some(mark => !mark.id) && page < 25) {
             fetchMarks(cookieValue, page + 1);
         } else {
+            totalRequests = marksData.filter(mark => mark.id).length;
+            updateProgress(); 
+
             fetchMarkDetails(cookieValue, marksData).then(() => {
                 showNotification();  
             });
@@ -128,27 +139,31 @@ function fetchMarks(cookieValue, page) {
 }
 
 async function fetchMarkDetails(cookieValue, marksData) {
-    const markPromises = marksData.map(mark => {
+    for (const mark of marksData) {
         if (mark.id) {
             const page = 1;
             const start = 0;
             const limit = 25;
 
-            return fetch('http://localhost:3000/api/markresult', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    cookie: cookieValue,
-                    page: page,
-                    start: start,
-                    limit: limit,
-                    mark_id: mark.id
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
+            await sleep(100);
+
+            try {
+                const response = await fetch('http://localhost:3000/api/markresult', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        cookie: cookieValue,
+                        page: page,
+                        start: start,
+                        limit: limit,
+                        mark_id: mark.id
+                    })
+                });
+
+                const data = await response.json();
+
                 if (data.success && data.marks.length > 0) {
                     const productDetails = data.marks[0];
                     mark.production = productDetails.Production;
@@ -156,14 +171,18 @@ async function fetchMarkDetails(cookieValue, marksData) {
                     mark.capacity = productDetails.capacity;
                     mark.producer = productDetails.producer;
                 }
-            })
-            .catch(error => {
-                console.error('Ошибка при получении деталей марки:', error);
-            });
-        }
-    });
+                completedRequests++;
+                updateProgress(); 
 
-    await Promise.all(markPromises); 
+            } catch (error) {
+                console.error('Ошибка при получении деталей марки:', error);
+            }
+        }
+    }
+}
+
+function updateProgress() {
+    progress.textContent = `Алкокод подобран к ${completedRequests} из ${totalRequests} марок`;
 }
 
 

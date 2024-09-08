@@ -31,7 +31,6 @@ app.post('/api/checkmarks', async (req, res) => {
                 }
             }
         );
-        console.log(response)
         res.json(response.data);
     } catch (error) {
         console.error('Ошибка при отправке запроса:', error.message);
